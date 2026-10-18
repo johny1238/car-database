@@ -5,34 +5,6 @@ import requests
 
 st.set_page_config(page_title="Car Inventory Management", layout="wide")
 
-# --- GOOGLE SHEET CONFIGURATION ---
-SHEET_URL = "https://docs.google.com/spreadsheets/d/1xHoMFFghP0DXccDHqdfqZaBWkLkpJKVPrR-r4262wjE/edit?usp=drivesdk"
-
-# Optional: Paste your Apps Script deployment URL here later if you want direct submissions
-APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_DEPLOYMENT_URL_HERE"
-
-
-def get_csv_url(url):
-    if "/edit" in url:
-        return url.split("/edit")[0] + "/export?format=csv&gid=0"
-    return url
-
-
-def load_data():
-    try:
-        csv_url = get_csv_url(SHEET_URL)
-        df = pd.read_csv(csv_url)
-        df = df.dropna(how="all")
-        expected_co…
-[04:44, 19/10/2026] KHAN JUNAID: -
-[04:44, 19/10/2026] KHAN JUNAID: from datetime import datetime, timedelta
-import pandas as pd
-import streamlit as st
-import requests
-
-st.set_page_config(page_title="Car Inventory Management", layout="wide")
-
-# --- GOOGLE SHEET CONFIGURATION ---
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1xHoMFFghP0DXccDHqdfqZaBWkLkpJKVPrR-r4262wjE/edit?usp=drivesdk"
 APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_DEPLOYMENT_URL_HERE"
 
@@ -48,17 +20,7 @@ def load_data():
         csv_url = get_csv_url(SHEET_URL)
         df = pd.read_csv(csv_url)
         df = df.dropna(how="all")
-        expected_cols = [
-            "car_name",
-            "car_number",
-            "car_location",
-            "amount",
-            "deposit",
-            "status",
-            "pickup_deadline",
-        ]
-        display_df = df[[col for col in expected_cols if col in df.columns]]
-        return display_df
+        return df
     except Exception as e:
         st.error(
             f"Could not load data from Google Sheet. Make sure the URL is correct and shared as 'Anyone with the link'. Error: {e}"
@@ -66,14 +28,12 @@ def load_data():
         return pd.DataFrame()
 
 
-# --- NAVIGATION ---
 st.sidebar.title("Business Portal")
 page = st.sidebar.radio(
     "Navigation",
     ["Dashboard & Notifications", "Add New Car", "View & Update Cars"],
 )
 
-# --- PAGE 1: DASHBOARD ---
 if page == "Dashboard & Notifications":
     st.title("📊 Dashboard & Pickup Notifications")
 
@@ -119,7 +79,6 @@ if page == "Dashboard & Notifications":
     else:
         st.info("No cars found or sheet is empty.")
 
-# --- PAGE 2: ADD NEW CAR ---
 elif page == "Add New Car":
     st.title("🚘 Add New Car to Inventory")
 
@@ -174,7 +133,6 @@ elif page == "Add New Car":
             except Exception as e:
                 st.error(f"An unexpected error occurred: {e}")
 
-# --- PAGE 3: VIEW & UPDATE CARS ---
 elif page == "View & Update Cars":
     st.title("✏️ Manage Inventory Records")
     st.info(
